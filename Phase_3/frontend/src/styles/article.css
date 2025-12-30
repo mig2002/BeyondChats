@@ -54,3 +54,13 @@ body.light .article-card {
   text-align: center;
   margin-top: 40px;
 }
+.toggle-btn {
+  margin-top: 10px;
+  padding: 6px 10px;
+  font-size: 0.8rem;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  background-color: #0a66c2;
+  color: white;
+}

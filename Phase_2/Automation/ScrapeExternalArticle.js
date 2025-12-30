@@ -1,20 +1,17 @@
 const axios = require("axios");
-const cheerio = require("cheerio");
+const { htmlToText } = require("html-to-text");
 
 async function scrapeExternalArticle(url) {
-  const response = await axios.get(url);
-  const $ = cheerio.load(response.data);
+  try {
+    const response = await axios.get(url, {
+      timeout: 5000
+    });
 
-  let content = "";
-
-  $("p").each((_, el) => {
-    const text = $(el).text().trim();
-    if (text.length > 50) {
-      content += text + "\n";
-    }
-  });
-
-  return content.slice(0, 3000);
+    return htmlToText(response.data, { wordwrap: false });
+  } catch (err) {
+    console.warn("Skipping blocked URL:", url);
+    return null;
+  }
 }
 
 module.exports = scrapeExternalArticle;

@@ -1,5 +1,6 @@
 const axios = require("axios");
 const Article = require("../models/Article");
+const { htmlToText } = require("html-to-text");
 
 async function scrapeOldestBlogs() {
   const response = await axios.get(
@@ -12,12 +13,21 @@ async function scrapeOldestBlogs() {
     }
   );
 
-  const articles = response.data.map(post => ({
-    title: post.title.rendered,
-    link: post.link
-  }));
+  const articles = response.data.map(post => {
+    const cleanText = htmlToText(post.content.rendered, {
+      wordwrap: false
+    });
 
-  for (let article of articles) {
+    return {
+      title: post.title.rendered,
+      link: post.link,
+      originalContent: cleanText,
+      content: cleanText,
+      isUpdated: false
+    };
+  });
+
+  for (const article of articles) {
     await Article.updateOne(
       { link: article.link },
       { $setOnInsert: article },

@@ -15,6 +15,10 @@ const articleSchema = new mongoose.Schema(
       type: String,
       default: ""
     },
+    originalContent: {
+      type: String,
+      default: ""
+    },
     isUpdated: {
       type: Boolean,
       default: false

@@ -5,26 +5,48 @@ const searchGoogle = require("./GoogleSearch");
 const scrapeExternalArticle = require("./ScrapeExternalArticle");
 const rewriteArticle = require("./LLMupdate");
 const publishUpdatedArticle = require("./PublishUpdatedArticle");
+const isValidArticleUrl = require("./utils/isValidArticleUrl");
 
 (async () => {
   const articles = await fetchArticles();
 
-  for (let article of articles) {
-    const links = await searchGoogle(article.title);
-    if (links.length < 2) continue;
+  for (const article of articles) {
+    try {
+      const links = await searchGoogle(article.title);
 
-    const ref1 = await scrapeExternalArticle(links[0]);
-    const ref2 = await scrapeExternalArticle(links[1]);
+      // filter blocked domains
+      const validLinks = links.filter(isValidArticleUrl);
 
-    const updatedContent = await rewriteArticle(
-      article.title,
-      ref1,
-      ref2
-    );
+      if (validLinks.length < 2) {
+        console.log("Not enough valid references for:", article.title);
+        continue;
+      }
 
-    await publishUpdatedArticle(article._id, updatedContent, links);
+      const refContents = [];
 
-    console.log("Updated:", article.title);
+      for (const link of validLinks) {
+        const content = await scrapeExternalArticle(link);
+        if (content) refContents.push(content);
+        if (refContents.length === 2) break;
+      }
+
+      if (refContents.length < 2) {
+        console.log("Could not scrape enough references for:", article.title);
+        continue;
+      }
+
+      const updatedContent = await rewriteArticle(
+        article.title,
+        refContents[0],
+        refContents[1]
+      );
+
+      await publishUpdatedArticle(article._id, updatedContent, validLinks);
+
+      console.log("Updated:", article.title);
+    } catch (err) {
+      console.error("Failed article:", article.title);
+    }
   }
 
   process.exit(0);

@@ -5,6 +5,7 @@ import "../styles/article.css";
 function Articles() {
   const [articles, setArticles] = useState([]);
   const [expandedId, setExpandedId] = useState(null);
+  const [showUpdated, setShowUpdated] = useState({});
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -16,8 +17,15 @@ function Articles() {
       .catch(() => setLoading(false));
   }, []);
 
-  const toggleArticle = (id) => {
+  const toggleExpand = (id) => {
     setExpandedId(prev => (prev === id ? null : id));
+  };
+
+  const toggleVersion = (id) => {
+    setShowUpdated(prev => ({
+      ...prev,
+      [id]: !prev[id]
+    }));
   };
 
   if (loading) return <p className="loading">Loading articles...</p>;
@@ -26,26 +34,40 @@ function Articles() {
     <div className="articles-container">
       {articles.map(article => {
         const isExpanded = expandedId === article._id;
-        const previewText = article.content?.slice(0, 300);
+        const isUpdatedView = showUpdated[article._id];
+
+        const contentToShow = isUpdatedView
+          ? article.content
+          : article.originalContent;
+
+        const preview = contentToShow?.slice(0, 300);
 
         return (
           <div
             key={article._id}
             className="article-card"
-            onClick={() => toggleArticle(article._id)}
+            onClick={() => toggleExpand(article._id)}
           >
             <h2 className="article-title">{article.title}</h2>
 
             <p className="article-content">
-              {isExpanded ? article.content : `${previewText}...`}
+              {isExpanded ? contentToShow : `${preview}...`}
             </p>
+
+            {article.isUpdated && (
+              <button
+                className="toggle-btn"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  toggleVersion(article._id);
+                }}
+              >
+                {isUpdatedView ? "View Original" : "View Updated"}
+              </button>
+            )}
 
             <div className="status">
               Status: {article.isUpdated ? "Updated" : "Original"}
-            </div>
-
-            <div className="read-more">
-              {isExpanded ? "Read Less" : "Read More"}
             </div>
           </div>
         );
