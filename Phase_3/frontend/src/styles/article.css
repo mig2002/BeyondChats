@@ -1,0 +1,56 @@
+.articles-container {
+  max-width: 900px;
+  margin: 30px auto;
+  padding: 0 20px;
+}
+
+.article-card {
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+/* DARK CARD */
+body.dark .article-card {
+  background-color: #252525;
+  border: 1px solid #444;
+}
+
+/* LIGHT CARD */
+body.light .article-card {
+  background-color: white;
+  border: 1px solid #ddd;
+}
+
+.article-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+.article-title {
+  margin-bottom: 12px;
+}
+
+.article-content {
+  white-space: pre-wrap;
+  line-height: 1.6;
+}
+
+.status {
+  margin-top: 12px;
+  font-size: 0.85rem;
+  color: #0a66c2;
+}
+
+.read-more {
+  margin-top: 10px;
+  font-size: 0.8rem;
+  color: #0a66c2;
+}
+
+.loading {
+  text-align: center;
+  margin-top: 40px;
+}

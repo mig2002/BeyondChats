@@ -1,0 +1,17 @@
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+/* DARK THEME */
+body.dark {
+  background-color: #1f1f1f;
+  color: #ffffff;
+}
+
+/* LIGHT THEME */
+body.light {
+  background-color: #f4f6f8;
+  color: #1a1a1a;
+}
