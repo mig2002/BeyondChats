@@ -1,6 +1,7 @@
 # BeyondChats – Article Automation System
 
 Automated system to scrape, enhance, and manage blog articles using Node.js, REST APIs, and a React frontend.
+[![DOI](https://zenodo.org/badge/1124845445.svg)](https://doi.org/10.5281/zenodo.22065588)
 
 ---
 
